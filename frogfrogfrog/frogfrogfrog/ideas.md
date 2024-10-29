@@ -5,6 +5,11 @@
 
 -countdown to the remaning number of flies----->CHECK
 
+
+-GHOST FLY ---------->CHECK
+
+-freezeframe when you hit something ----->Check
+
 -Add a starting state (introduction to fly gobbling, maybe by a fly taunting the player)
 
 -Add an ending state (guilttripping the fly gobbler preferably)
@@ -19,4 +24,4 @@
 
 -aesthetic overhall
 
--GHOST FLY
+-what do each thing actually taste like. Maybe in the console ? Literal flavor text

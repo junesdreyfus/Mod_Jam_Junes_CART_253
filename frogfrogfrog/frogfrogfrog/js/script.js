@@ -31,7 +31,7 @@ const frog = {
         size: 20,
         speed: 20,
         // Determines how the tongue moves each frame
-        state: "idle" // State can be: idle, outbound, inbound
+        state: "idle" // State can be: idle, outbound, inbound, gun
     }
 };
 
@@ -56,6 +56,14 @@ const ghostfly ={
     y: undefined -10,
     
 }
+}
+const gun ={
+  x: -400,
+  y: 50,
+  width: 100,
+  height: 30,
+  speed: 1.5,
+  fill: 'rgb(104,104,113)',
 }
 
 
@@ -89,10 +97,13 @@ function draw() {
     drawFly();
     moveGhostfly();
     drawGhostfly();
+    moveGun();
+    drawGun();
     moveFrog();
     moveTongue();
     drawFrog();
     checkTongueFlyOverlap();
+    checkTongueGunOverlap();
 
 }
 
@@ -138,7 +149,22 @@ function drawGhostfly() {
     noFill();
     ellipse(ghostfly.x, ghostfly.y-40, 40, 20)
     pop();
+  
     
+}
+
+function drawGun() {
+  push();
+  noStroke();
+  fill(gun.fill);
+  rect (gun.x, gun.y, gun.width, gun.height);
+  rect (gun.x, gun.y, 20, 50)
+  rect (gun.x, gun.y, 10, -10)
+  pop();
+}
+
+function moveGun() {
+  gun.x += gun.speed;
 }
 
 /**
@@ -221,6 +247,15 @@ function checkTongueFlyOverlap() {
     const eaten = (d < frog.tongue.size/2 + fly.size/2);
     if (eaten && remainingflies>1) {
       
+      //red freezeframe when you hit something/
+      push();
+      noStroke();
+      fill('red');
+      square(0, 0, 1000);
+      pop();
+      
+      //defining ghostfly coordinates/
+      //this wasn't meant to sound like a björk lyric/
       ghostfly.x = fly.x;
       ghostfly.halo.x = fly.x;
       ghostfly.y = fly.y;
@@ -239,10 +274,34 @@ function checkTongueFlyOverlap() {
     else if (eaten && remainingflies<2) {
       fly.size = 0;
       
+      ghostfly.x = fly.x;
+      ghostfly.halo.x = fly.x;
+      ghostfly.y = fly.y;
+      ghostfly.halo.y = fly.y;
+      
       remainingflies=0;
       
       frog.tongue.state = "inbound";
       
+    }
+}
+
+/**
+ * Handles the tongue overlapping the gun
+ */
+function checkTongueGunOverlap() {
+    // Get distance from tongue to gun
+    const d = dist(frog.tongue.x, frog.tongue.y, gun.x, gun.y);
+    // Check if it's an overlap
+    const eaten = (d < frog.tongue.size/2 + gun.width/2);
+    if (eaten) {
+        gun.speed = 0;
+        gun.y += 19;
+        // Bring back the tongue
+        frog.tongue.state = "inbound";
+    if (gun.y<100) {
+      frog.tongue.state = "gun";
+    }
     }
 }
 
