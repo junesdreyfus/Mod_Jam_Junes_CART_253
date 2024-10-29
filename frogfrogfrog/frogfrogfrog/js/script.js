@@ -40,14 +40,28 @@ const frog = {
 const fly = {
     x: 0,
     y: 200, // Will be random
-    size: 10,
+    size: 45,
     speed: 3
 };
+
+const ghostfly ={
+  //what's a fly without a ghost/
+    x: undefined,
+    y: undefined,
+    fill: 'rgb(194,194,231)',
+    size: 45,
+    speed: 2,
+  halo: {
+    x: undefined,
+    y: undefined -10,
+    
+}
+}
 
 
 //introduce fly counter/
 //how many flies are still in the program/
-let remainingfly = 30;
+let remainingflies = 30;
 
 /**
  * Creates the canvas and initializes the fly
@@ -69,10 +83,12 @@ function draw() {
     textSize(65);
     fill('white')
     textFont
-    text (remainingfly, 300, 100, 10);
+    text (remainingflies, 300, 100, 10);
     pop();
     moveFly();
     drawFly();
+    moveGhostfly();
+    drawGhostfly();
     moveFrog();
     moveTongue();
     drawFrog();
@@ -92,6 +108,11 @@ function moveFly() {
         resetFly();
     }
 }
+function moveGhostfly() {
+  //move the ghost fly
+  ghostfly.x += ghostfly.speed;
+  ghostfly.y -= ghostfly.speed;
+}
 
 /**
  * Draws the fly as a black circle
@@ -102,6 +123,22 @@ function drawFly() {
     fill("#000000");
     ellipse(fly.x, fly.y, fly.size);
     pop();
+}
+
+function drawGhostfly() {
+    push();
+    noStroke();
+    fill(ghostfly.fill);
+    ellipse(ghostfly.x, ghostfly.y, ghostfly.size);
+    pop();
+    
+    push();
+    strokeWeight(6);
+    stroke(ghostfly.fill)
+    noFill();
+    ellipse(ghostfly.x, ghostfly.y-40, 40, 20)
+    pop();
+    
 }
 
 /**
@@ -182,9 +219,16 @@ function checkTongueFlyOverlap() {
     const d = dist(frog.tongue.x, frog.tongue.y, fly.x, fly.y);
     // Check if it's an overlap
     const eaten = (d < frog.tongue.size/2 + fly.size/2);
-    if (eaten && remainingfly>1) {
+    if (eaten && remainingflies>1) {
+      
+      ghostfly.x = fly.x;
+      ghostfly.halo.x = fly.x;
+      ghostfly.y = fly.y;
+      ghostfly.halo.y = fly.y;
+       
         //one less fly in the program/
-        remainingfly-= 1
+        remainingflies-= 1
+        
         // Reset the fly
         resetFly();
         
@@ -192,9 +236,12 @@ function checkTongueFlyOverlap() {
         frog.tongue.state = "inbound";
     }
     //it will not reset the fly if there are none left/
-    else if (eaten && remainingfly<2) {
+    else if (eaten && remainingflies<2) {
       fly.size = 0;
-      remainingfly=0;
+      
+      remainingflies=0;
+      
+      frog.tongue.state = "inbound";
       
     }
 }
