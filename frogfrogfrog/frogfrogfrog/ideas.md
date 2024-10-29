@@ -15,3 +15,4 @@
 
 -gun state (as a collectible ?) (a gun that modifies the interaction, gun collectible passes by like a fly, if the player catches it they can now use it (working similarly to the tongue))
 
+-gun sounds (of course)

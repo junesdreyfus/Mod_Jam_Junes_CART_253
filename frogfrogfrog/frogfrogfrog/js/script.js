@@ -15,6 +15,7 @@
 
 "use strict";
 
+
 // Our frog
 const frog = {
     // The frog's body has a position and size
@@ -43,11 +44,19 @@ const fly = {
     speed: 3
 };
 
+
+//introduce fly counter/
+//how many flies are still in the program/
+let remainingfly = 30;
+
 /**
  * Creates the canvas and initializes the fly
  */
+
 function setup() {
     createCanvas(640, 480);
+  
+
 
     // Give the fly its first random position
     resetFly();
@@ -55,12 +64,20 @@ function setup() {
 
 function draw() {
     background("#87ceeb");
+    //display remaining flies/
+      push();
+    textSize(65);
+    fill('white')
+    textFont
+    text (remainingfly, 300, 100, 10);
+    pop();
     moveFly();
     drawFly();
     moveFrog();
     moveTongue();
     drawFrog();
     checkTongueFlyOverlap();
+
 }
 
 /**
@@ -156,6 +173,7 @@ function drawFrog() {
     pop();
 }
 
+
 /**
  * Handles the tongue overlapping the fly
  */
@@ -164,11 +182,20 @@ function checkTongueFlyOverlap() {
     const d = dist(frog.tongue.x, frog.tongue.y, fly.x, fly.y);
     // Check if it's an overlap
     const eaten = (d < frog.tongue.size/2 + fly.size/2);
-    if (eaten) {
+    if (eaten && remainingfly>1) {
+        //one less fly in the program/
+        remainingfly-= 1
         // Reset the fly
         resetFly();
+        
         // Bring back the tongue
         frog.tongue.state = "inbound";
+    }
+    //it will not reset the fly if there are none left/
+    else if (eaten && remainingfly<2) {
+      fly.size = 0;
+      remainingfly=0;
+      
     }
 }
 
