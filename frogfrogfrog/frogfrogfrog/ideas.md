@@ -1,24 +1,17 @@
 # Starting points
 
 
-Finding metro tickets on the ground and trying to sell them
+-limited number of flies
 
-**Frog eating flies but it gets harder and harder to catch them**
+-countdown to the remaning number of flies
 
-Swimming lessons but controlling your body is really hard
+-Add a starting state (introduction to fly gobbling, maybe by a fly taunting the player)
 
-Crossing the street and it’s busy
+-Add an ending state (guilttripping the fly gobbler preferably)
 
-Riding a tricycle but the wheel keeps falling off
+///-uh uhhh healthbars ? Would the fly be able to attack you ?
 
-Shaving people’s heads in beautiful patterns and showing them at an art gallery
+-cool tunes i think
 
-Making cups out of clay and seeing what cafe customers say about them
+-gun state (as a collectible ?) (a gun that modifies the interaction, gun collectible passes by like a fly, if the player catches it they can now use it (working similarly to the tongue))
 
-Growing plants that eat you
-
-Keeping a computer mouse as a pet and looking after it
-
-Rewiring a light
-
-Cooking spaghetti with a dog
