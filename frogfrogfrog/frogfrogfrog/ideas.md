@@ -8,6 +8,8 @@
 
 -GHOST FLY ---------->CHECK
 
+-ghost fly flies ghostily --------> CHECK
+
 -freezeframe when you hit something ----->Check
 
 -Add a starting state (introduction to fly gobbling, maybe by a fly taunting the player)
