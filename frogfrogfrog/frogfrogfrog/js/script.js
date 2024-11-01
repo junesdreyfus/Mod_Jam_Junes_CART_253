@@ -23,9 +23,6 @@ let state = 'intro';
  //how many flies are still in the program/
  let remainingflies = 31;
  
- /**
-  * Creates the canvas and initializes the fly
-  */
 
  // Our frog
  const frog = {
@@ -75,8 +72,8 @@ let state = 'intro';
  const gun ={
    x: -400,
    y: 50,
-   width: 100,
-   height: 30,
+   width: 30,
+   height: 100,
    speed: 1.5,
    fill: 'rgb(104,104,113)',
  }
@@ -230,11 +227,16 @@ if (state === 'intro'){
  
  function drawGun() {
    push();
-   noStroke();
    fill(gun.fill);
-   rect (gun.x, gun.y, gun.width, gun.height);
-   rect (gun.x, gun.y, 20, 50)
-   rect (gun.x, gun.y, 10, -10)
+   
+   //muzzle of the gun/
+   rect (gun.x+35, gun.y-75, gun.width-10, 10)
+   //barrel of the gun/
+   rect (gun.x+65, gun.y+20, -10, 10)
+   //handle of the gun/
+   rect (gun.x+30, gun.y-70, gun.width, gun.height);
+   //sights of the gun/
+   rect (gun.x-20, gun.y+10, 50, 20)
    pop();
  }
  
@@ -283,6 +285,16 @@ if (state === 'intro'){
              frog.tongue.state = "idle";
          }
      }
+     else if (frog.tongue.state === "gun"){
+      frog.tongue.y = 300;
+      gun.y = 300;
+       
+      if (gun.y > 650){
+        frog.tongue.state = "idle";
+      }
+
+       }
+     
  }
  
  /**
@@ -348,7 +360,9 @@ if (state === 'intro'){
        ghostfly.y = fly.y;
        ghostfly.halo.y = fly.y;
         
+       //frog's body gets bigger the more she eats/
        frog.body.size +=10
+       frog.tongue.size +=2
          //one less fly in the program/
          remainingflies-= 1
          
@@ -367,7 +381,9 @@ if (state === 'intro'){
        ghostfly.y = fly.y;
        ghostfly.halo.y = fly.y;
        
+       //body gets bigger the more she eats/
        frog.body.size +=10
+       frog.tongue.size +=2
        
        remainingflies=0;
        
@@ -381,17 +397,31 @@ if (state === 'intro'){
   */
  function checkTongueGunOverlap() {
      // Get distance from tongue to gun
-     const d = dist(frog.tongue.x, frog.tongue.y, gun.x, gun.y);
+     const dGun = dist(frog.tongue.x, frog.tongue.y, gun.x, gun.y);
      // Check if it's an overlap
-     const eaten = (d < frog.tongue.size/2 + gun.width/2);
-     if (eaten) {
-         gun.speed = 0;
-         gun.y += 19;
-         // Bring back the tongue
-         frog.tongue.state = "inbound";
-     if (gun.y<100) {
+     const gunHeld = (dGun < frog.tongue.size/2 + gun.height);
+     if (gunHeld) {
+       
+       //what happens when the gun overlaps with tongue/
+       //gun coordinates become the same as the frog's tongue's
+        gun.speed += 0;
+        gun.y += frog.tongue.speed;
+       gun.x = frog.tongue.x
+       
+       gun.y = constrain(gun.y, 0, 350)
+       
+       //Frog tongue's comes back to default/
+       frog.tongue.y += frog.tongue.speed;
+       frog.tongue.y = constrain (frog.tongue.y, 0, 350)
+       
+       //frog's tongue stops at a specific y coordinate/
+       if (frog.tongue.y === 100){
+         frog.tongue.speed=0;
+         
+        //frog's tongue state is now gun//
        frog.tongue.state = "gun";
-     }
+       }
+
      }
  }
 
