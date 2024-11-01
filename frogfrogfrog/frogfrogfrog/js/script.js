@@ -16,6 +16,16 @@
 
  "use strict";
 
+let state = 'intro';
+
+ 
+ //introduce fly counter/
+ //how many flies are still in the program/
+ let remainingflies = 31;
+ 
+ /**
+  * Creates the canvas and initializes the fly
+  */
 
  // Our frog
  const frog = {
@@ -41,7 +51,7 @@
  const fly = {
      x: 0,
      y: 200, // Will be random
-     size: 45,
+     size: 45 ,
      speed: 3
  };
  
@@ -49,9 +59,9 @@
    //what's a fly without a ghost/
      x: undefined,
      y: undefined,
-     r: 214,
-     g: 214,
-     b: 231,
+     r: 162,
+     g: 164,
+     b: 202,
      size: 45,
      speed: 2,
      hovering: 0,
@@ -71,15 +81,7 @@
    fill: 'rgb(104,104,113)',
  }
  
- 
- //introduce fly counter/
- //how many flies are still in the program/
- let remainingflies = 30;
- 
- /**
-  * Creates the canvas and initializes the fly
-  */
- 
+
  function setup() {
      createCanvas(640, 480);
    
@@ -91,13 +93,46 @@
  
  function draw() {
      background("#A2A4CA");
+   
+   
+   //defining the intro state/
+if (state === 'intro'){
+  drawFrog();
+  moveFrog();
+  moveTongue();
+  drawFly();
+  introFly();
+  drawGhostfly();
+  moveGhostfly();
+  glowGhostfly();
+  checkTongueFlyOverlap();
+  
+  
+
+  
+  //transitioning between states/
+  //if downarrow is pressed the gameplay starts/
+  if (remainingflies<31){
+    state = 'gameplay';
+  }
+}
+   
+   //defining the gameplay state/
+   else if (state === 'gameplay'){
+     
      //display remaining flies/
-       push();
+      push();
+     stroke('black')
+     strokeWeight(2);
      textSize(65);
-     fill('white')
+     fill(255, 255, 255)
      textFont
      text (remainingflies, 300, 100, 10);
      pop();
+     
+     fly.speed=3
+     
+     
      moveFly();
      drawFly();
      moveGhostfly();
@@ -110,8 +145,29 @@
      drawFrog();
      checkTongueFlyOverlap();
      checkTongueGunOverlap();
+     
  
  }
+ } 
+
+
+  function introFly(){
+    //the first fly introduces the game/
+    
+    //Spawning the first fly/
+    
+    //moving the fly to the middle of the screen/
+    fly.x += fly.speed;
+    fly.y += random(1, -1);
+    
+    //restraining the fly to the middle of the screen/
+    if (fly.x>320){
+      fly.speed=0
+    }
+    
+    
+  }
+
  
  /**
   * Moves the fly according to its speed
@@ -120,12 +176,13 @@
  function moveFly() {
      // Move the fly
      fly.x += fly.speed;
+     fly.y += random(1,-1);
      // Handle the fly going off the canvas
      if (fly.x > width) {
          resetFly();
      }
  }
- 
+
  
  /**
   * Draws the fly as a black circle
@@ -165,9 +222,9 @@
  function glowGhostfly() {
    ghostfly.r -= 4;
    ghostfly.g -= 4;
-   if(ghostfly.r<180 && ghostfly.g<180){
-     ghostfly.r +=30;
-     ghostfly.g +=30;
+   if(ghostfly.r<160 && ghostfly.g<160){
+     ghostfly.r +=23;
+     ghostfly.g +=23;
       }
  }
  
@@ -232,26 +289,38 @@
   * Displays the tongue (tip and line connection) and the frog (body)
   */
  function drawFrog() {
-     // Draw the tongue tip
-     push();
-     fill("#ff0000");
-     noStroke();
-     ellipse(frog.tongue.x, frog.tongue.y, frog.tongue.size);
-     pop();
  
      // Draw the rest of the tongue
      push();
-     stroke("#ff0000");
+     stroke("#BE6A6A");
      strokeWeight(frog.tongue.size);
      line(frog.tongue.x, frog.tongue.y, frog.body.x, frog.body.y);
      pop();
  
+   
+     // Draw the tongue tip
+     push();
+     stroke('rgb(213,105,105)');
+     strokeWeight(8)
+     fill('rgb(213,105,105)');
+     ellipse(frog.tongue.x, frog.tongue.y, frog.tongue.size);
+     pop();
+   
      // Draw the frog's body
      push();
-     fill("#00ff00");
-     noStroke();
-     ellipse(frog.body.x, frog.body.y, frog.body.size);
+     fill("#9DD49D");
+     ellipse(frog.body.x, frog.body.y, frog.body.size, 200);
      pop();
+   
+     push();
+     fill('rgb(234,230,230)')
+     ellipse(frog.body.x+frog.body.size/3, frog.body.y-60, 30);
+     ellipse(frog.body.x-frog.body.size/3, frog.body.y-60, 30);
+     fill('black')
+     ellipse(frog.body.x+frog.body.size/3, frog.body.y-60, 5);
+     ellipse(frog.body.x-frog.body.size/3, frog.body.y-60, 5);
+     pop();
+     
  }
  
  
@@ -279,6 +348,7 @@
        ghostfly.y = fly.y;
        ghostfly.halo.y = fly.y;
         
+       frog.body.size +=10
          //one less fly in the program/
          remainingflies-= 1
          
@@ -297,13 +367,15 @@
        ghostfly.y = fly.y;
        ghostfly.halo.y = fly.y;
        
+       frog.body.size +=10
+       
        remainingflies=0;
        
        frog.tongue.state = "inbound";
        
      }
  }
- 
+
  /**
   * Handles the tongue overlapping the gun
   */
@@ -322,7 +394,7 @@
      }
      }
  }
- 
+
  /**
   * Launch the tongue on click (if it's not launched yet)
   */
@@ -330,4 +402,5 @@
      if (frog.tongue.state === "idle") {
          frog.tongue.state = "outbound";
      }
+   
  }
