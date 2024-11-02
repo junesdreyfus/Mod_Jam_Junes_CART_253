@@ -18,6 +18,8 @@
 
 let state = 'intro';
 
+
+
  
  //introduce fly counter/
  //how many flies are still in the program/
@@ -48,7 +50,7 @@ let state = 'intro';
  const fly = {
      x: 0,
      y: 200, // Will be random
-     size: 45 ,
+     size: 10 ,
      speed: 3
  };
  
@@ -59,7 +61,7 @@ let state = 'intro';
      r: 162,
      g: 164,
      b: 202,
-     size: 45,
+     size: 10,
      speed: 2,
      hovering: 0,
      
@@ -77,6 +79,32 @@ let state = 'intro';
    speed: 1.5,
    fill: 'rgb(104,104,113)',
  }
+ 
+ const speech = [
+  "'insert here'",
+ 
+];
+
+// Which part of the speech are we displaying?
+let speechIndex = 0;
+
+ const endspeech = [
+  "'insert end here'",
+ 
+];
+
+// Which part of the end speech are we displaying?
+let endspeechIndex = 0;
+
+// Dialog box specification
+let box = {
+  x: fly.x +50,
+  y: fly.y +50,
+  width: 200,
+  height: 50,
+  padding: 10,
+  fontSize: 12
+};
  
 
  function setup() {
@@ -103,7 +131,13 @@ if (state === 'intro'){
   moveGhostfly();
   glowGhostfly();
   checkTongueFlyOverlap();
-  
+  showDialog();
+
+
+/**
+ * Display the speech in a dialog box
+ */
+
   
 
   
@@ -143,10 +177,87 @@ if (state === 'intro'){
      checkTongueFlyOverlap();
      checkTongueGunOverlap();
      
- 
+ if (remainingflies === 0){
+   state = 'ending';
+ }
+     
+ }
+   
+ else if (state === 'ending'){
+   
+   drawFrog();
+   moveFrog();
+   moveTongue();
+   drawGhostfly();
+   moveGhostfly();
+   glowGhostfly();
+   showEndDialog();
+   endingFly();
+   
  }
  } 
 
+function showDialog() {
+  // The background box
+  push();
+  fill(0);
+  stroke(255);
+  strokeWeight(1);
+  rect(fly.x, fly.y+50, box.width, box.height);
+  pop();
+  
+  // The text
+  // Note how we're using extra arguments in text() to specify
+  // the dimensions we want the text to wrap inside, including
+  // using the padding of the dialog box
+  push();
+  fill(255);
+  textSize(12);
+  text(speech[speechIndex], fly.x + box.padding, fly.y+50  + box.padding, box.width - 2 * box.padding, box.height - 2 * box.padding);
+  pop();
+}
+
+/**
+ * When the user clicks, advance the speech if there's more.
+ */
+function mousePressed() {
+  // Make sure we're not at the end of the speech aready
+  if (speechIndex < speech.length - 1) {
+    // Advance the line
+    speechIndex++;
+  }
+}
+
+function showEndDialog() {
+  // The background box
+  push();
+  fill(0);
+  stroke(255);
+  strokeWeight(1);
+  rect(ghostfly.x, ghostfly.y+50, box.width, box.height);
+  pop();
+  
+  // The text
+  // Note how we're using extra arguments in text() to specify
+  // the dimensions we want the text to wrap inside, including
+  // using the padding of the dialog box
+  push();
+  fill(255);
+  textSize(12);
+  text(endspeech[endspeechIndex], ghostfly.x + box.padding, ghostfly.y+50  + box.padding, box.width - 2 * box.padding, box.height - 2 * box.padding);
+  pop();
+}
+
+/**
+ * When the user clicks, advance the speech if there's more.
+ */
+function mousePressed() {
+  // Make sure we're not at the end of the speech aready
+  if (speechIndex < speech.length - 1) {
+    // Advance the line
+    speechIndex++;
+  }
+}
 
   function introFly(){
     //the first fly introduces the game/
@@ -160,6 +271,23 @@ if (state === 'intro'){
     //restraining the fly to the middle of the screen/
     if (fly.x>320){
       fly.speed=0
+    }
+    
+    
+  }
+
+function endingFly(){
+    //the first fly introduces the game/
+    
+    //Spawning the first fly/
+    
+    //moving the fly to the middle of the screen/
+    ghostfly.y += ghostfly.speed;
+    
+    
+    //restraining the fly to the middle of the screen/
+    if (ghostfly.x>320){
+      ghostfly.speed=0
     }
     
     
@@ -250,6 +378,12 @@ if (state === 'intro'){
  function resetFly() {
      fly.x = 0;
      fly.y = random(0, 300);
+ }
+
+
+ function resetGhostfly() {
+     ghostfly.x = 0;
+     ghostfly.y = 100;
  }
  
  /**
@@ -421,9 +555,18 @@ if (state === 'intro'){
         //frog's tongue state is now gun//
        frog.tongue.state = "gun";
        }
+       if (gun.y > 300 && keyIsPressed === true && keyCode === 32){
+        push();
+        noStroke();
+        fill ('#FFA500');
+        rect(gun.x+35, gun.y-75, 30, -500);
+        pop();
+        
+        }
+       }
+
 
      }
- }
 
  /**
   * Launch the tongue on click (if it's not launched yet)
