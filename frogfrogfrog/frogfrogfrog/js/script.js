@@ -18,12 +18,70 @@
 
 let state = 'intro';
 
+const flavortext ={
+      gun : "A cold, almost sour taste overwhelms my frog mouth, a taste of power ? (My taste buds gently let me know to press space to shoot)",
+  
+      fly : [
+  "A salty snack. kinda addicting...",
+  "A subpar fly taste, maybe it had a bad hygiene?",
+  "Must. Eat. Another one.",
+  "This one had a sweet melon aftertaste. Exotic!",
+  "This fly doesn't taste like anything.",
+],
+    ending : "I don't feel remotely bad about this.",
+  trueending : "I guess I need to get a life now",
+  undertalereference : "I guess this is just like Undertale",
+}
 
+let currentflavor = "I'm kinda hungry."
+
+ const speech = [
+  "Bonjour-hi! Bonjour-hi!",
+   "Couldn't help but notice that uh...",
+   "giant tongue of yours...",
+   "It's cool, it's cool. I just wanted... you know.",
+   "Just making sure you were aware of the guidelines...",
+   "We try to see ourselves as an antispecist, non hierarchical,",
+   "anti capitalist, anti imperialist,",
+   "FLYNTA association. We call ourselves the FlyTr@ps.",
+   "The Fly part is not...  it's just our name...",
+   "so don't you worry about that",
+   "I guess uh",
+   "I guess if you wanna",
+   "I'm sorry, that tongue thing you keep doing is",
+   "It's kinda distracting me",
+   "But yeah, feel free to stick around.",
+   "I mean hang around.",
+   "I'll be over there.",
+   "...",
+   "weird fucking gal..."
+];
+
+// Which part of the speech are we displaying?
+let speechIndex = 0;
+
+ const endspeech = [
+  "There are no more flies here.",
+   "You bastard",
+   "Please let me greave in peace",
+   "I guess it really makes you think huh ?",
+   "This is just like...",
+   "this is just like in Undertale",
+   "The game is over for you now please leave.",
+   "I'm not writing any more dialog for this.",
+
+   
+ 
+];
+
+
+// Which part of the end speech are we displaying?
+let endspeechIndex = 0;
 
  
  //introduce fly counter/
  //how many flies are still in the program/
- let remainingflies = 31;
+ let remainingflies = 31; 
  
 
  // Our frog
@@ -80,26 +138,22 @@ let state = 'intro';
    fill: 'rgb(104,104,113)',
  }
  
- const speech = [
-  "'insert here'",
- 
-];
 
-// Which part of the speech are we displaying?
-let speechIndex = 0;
 
- const endspeech = [
-  "'insert end here'",
- 
-];
-
-// Which part of the end speech are we displaying?
-let endspeechIndex = 0;
 
 // Dialog box specification
 let box = {
   x: fly.x +50,
   y: fly.y +50,
+  width: 200,
+  height: 50,
+  padding: 10,
+  fontSize: 12
+};
+
+let flavorbox = {
+    x: 420,
+  y: 400,
   width: 200,
   height: 50,
   padding: 10,
@@ -119,19 +173,24 @@ let box = {
  function draw() {
      background("#A2A4CA");
    
+  showFlavortext();
    
    //defining the intro state/
 if (state === 'intro'){
+  
   drawFrog();
   moveFrog();
   moveTongue();
   drawFly();
   introFly();
+  
   drawGhostfly();
   moveGhostfly();
   glowGhostfly();
   checkTongueFlyOverlap();
   showDialog();
+  
+  showFlavortext();
 
 
 /**
@@ -164,11 +223,13 @@ if (state === 'intro'){
      fly.speed=3
      
      
+  showFlavortext();
      moveFly();
      drawFly();
      moveGhostfly();
      drawGhostfly();
      glowGhostfly();
+     
      moveGun();
      drawGun();
      moveFrog();
@@ -176,6 +237,7 @@ if (state === 'intro'){
      drawFrog();
      checkTongueFlyOverlap();
      checkTongueGunOverlap();
+     
      
  if (remainingflies === 0){
    state = 'ending';
@@ -185,6 +247,7 @@ if (state === 'intro'){
    
  else if (state === 'ending'){
    
+  showFlavortext();
    drawFrog();
    moveFrog();
    moveTongue();
@@ -194,8 +257,26 @@ if (state === 'intro'){
    showEndDialog();
    endingFly();
    
+  showFlavortext();
+   
  }
  } 
+
+function showFlavortext() {
+  // The background box
+  push();
+  fill(0);
+  stroke(255);
+  strokeWeight(1);
+  rect(flavorbox.x, flavorbox.y, flavorbox.width, flavorbox.height);
+  pop();
+  
+  push();
+  fill(255);
+  textSize(12);
+  text(currentflavor, flavorbox.x + box.padding, flavorbox.y , flavorbox.width - 2 * flavorbox.padding, flavorbox.height * flavorbox.padding);
+  pop();
+}
 
 function showDialog() {
   // The background box
@@ -207,9 +288,6 @@ function showDialog() {
   pop();
   
   // The text
-  // Note how we're using extra arguments in text() to specify
-  // the dimensions we want the text to wrap inside, including
-  // using the padding of the dialog box
   push();
   fill(255);
   textSize(12);
@@ -217,16 +295,7 @@ function showDialog() {
   pop();
 }
 
-/**
- * When the user clicks, advance the speech if there's more.
- */
-function mousePressed() {
-  // Make sure we're not at the end of the speech aready
-  if (speechIndex < speech.length - 1) {
-    // Advance the line
-    speechIndex++;
-  }
-}
+
 
 function showEndDialog() {
   // The background box
@@ -251,13 +320,6 @@ function showEndDialog() {
 /**
  * When the user clicks, advance the speech if there's more.
  */
-function mousePressed() {
-  // Make sure we're not at the end of the speech aready
-  if (speechIndex < speech.length - 1) {
-    // Advance the line
-    speechIndex++;
-  }
-}
 
   function introFly(){
     //the first fly introduces the game/
@@ -271,6 +333,22 @@ function mousePressed() {
     //restraining the fly to the middle of the screen/
     if (fly.x>320){
       fly.speed=0
+       push();
+     stroke('black')
+     strokeWeight(2);
+     textSize(65);
+     fill(255, 255, 255)
+     textFont
+     text (remainingflies, 300, 100, 10);
+     pop();
+    }
+    if (speechIndex === 16){
+      fly.speed = 3;}
+    if (speechIndex === 19){
+      state = 'gameplay';
+    }
+    if (fly.x>640){
+      state = 'gameplay';
     }
     
     
@@ -286,11 +364,20 @@ function endingFly(){
     
     
     //restraining the fly to the middle of the screen/
-    if (ghostfly.x>320){
+    
+  if (ghostfly.x>320){
+      
+       currentflavor = flavortext.ending;
       ghostfly.speed=0
-    }
-    
-    
+  }
+  if (endspeechIndex === 5){
+    currentflavor = flavortext.undertalereference;
+  }
+  if (endspeechIndex > 7){
+    currentflavor = flavortext.trueending;
+  }
+  if (endspeechIndex > 7){
+    ghostfly.speed = 3}
   }
 
  
@@ -360,9 +447,9 @@ function endingFly(){
    //muzzle of the gun/
    rect (gun.x+35, gun.y-75, gun.width-10, 10)
    //barrel of the gun/
-   rect (gun.x+65, gun.y+20, -10, 10)
+   rect (gun.x+55, gun.y+20, -10, 10)
    //handle of the gun/
-   rect (gun.x+30, gun.y-70, gun.width, gun.height);
+   rect (gun.x+25, gun.y-70, gun.width, gun.height);
    //sights of the gun/
    rect (gun.x-20, gun.y+10, 50, 20)
    pop();
@@ -479,6 +566,8 @@ function endingFly(){
      // Check if it's an overlap
      const eaten = (d < frog.tongue.size/2 + fly.size/2);
      if (eaten && remainingflies>1) {
+       //change flavor/
+       currentflavor = random(flavortext.fly)
        
        //red freezeframe when you hit something/
        push();
@@ -536,6 +625,8 @@ function endingFly(){
      const gunHeld = (dGun < frog.tongue.size/2 + gun.height);
      if (gunHeld) {
        
+       flavorbox.height += 100;
+       currentflavor = flavortext.gun;
        //what happens when the gun overlaps with tongue/
        //gun coordinates become the same as the frog's tongue's
         gun.speed += 0;
@@ -551,23 +642,44 @@ function endingFly(){
        //frog's tongue stops at a specific y coordinate/
        if (frog.tongue.y === 100){
          frog.tongue.speed=0;
+      
          
         //frog's tongue state is now gun//
        frog.tongue.state = "gun";
+      
+       currentflavor = flavortext.gun;
+      flavorbox.height += 100
        }
        if (gun.y > 300 && keyIsPressed === true && keyCode === 32){
         push();
         noStroke();
         fill ('#FFA500');
-        rect(gun.x+35, gun.y-75, 30, -500);
+        rect(gun.x+35, 0, 20, gun.y-75);
         pop();
+         
+         //if gun ray intersects with fly it should be shot down.
+         if (mouseX+35 < fly.x && fly.x < mouseX+55 ){
+           fly.y+= fly.speed*5;
+           
+           ghostfly.x = fly.x;
+           ghostfly.halo.x = fly.x;
+           ghostfly.y = fly.y; 
+           ghostfly.halo.y = fly.y;
+           
+            drawGhostfly();
+           moveGhostfly();
+           glowGhostfly();
+ 
+          remainingflies -=1;
+          
+           resetFly();
+           }
+         }
+           
         
         }
        }
-
-
-     }
-
+  
  /**
   * Launch the tongue on click (if it's not launched yet)
   */
@@ -575,5 +687,11 @@ function endingFly(){
      if (frog.tongue.state === "idle") {
          frog.tongue.state = "outbound";
      }
+   if (state === "intro"){
+     speechIndex += 1;
+   }
+   if (state === "ending"){
+     endspeechIndex += 1;
+   }
    
  }
