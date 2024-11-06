@@ -23,13 +23,16 @@ const flavortext ={
   
       fly : [
   "A salty snack. kinda addicting...",
-  "A subpar fly taste, maybe it had a bad hygiene?",
+  "A subpar fly taste, maybe she had a bad hygiene?",
   "Must. Eat. Another one.",
-  "This one had a sweet melon aftertaste. Exotic!",
+  "This one has a sweet melon aftertaste. Exotic!",
   "This fly doesn't taste like anything.",
+  "This fly tastes incredible.",
+  "This fly is vape flavored",
+  "This one tastes spooky",
 ],
     ending : "I don't feel remotely bad about this.",
-  trueending : "I guess I need to get a life now",
+  trueending : "I should get a life",
   undertalereference : "I guess this is just like Undertale",
 }
 
@@ -43,8 +46,8 @@ let currentflavor = "I'm kinda hungry."
    "Just making sure you were aware of the guidelines...",
    "We try to see ourselves as an antispecist, non hierarchical,",
    "anti capitalist, anti imperialist,",
-   "FLYNTA association. We call ourselves the FlyTr@ps.",
-   "The Fly part is not...  it's just our name...",
+   "FLYNTA owned space. We call ourselves the FlyTr@ps.",
+   "The Fly part is not...  that's just our name...",
    "so don't you worry about that",
    "I guess uh",
    "I guess if you wanna",
@@ -61,9 +64,10 @@ let currentflavor = "I'm kinda hungry."
 let speechIndex = 0;
 
  const endspeech = [
+  "you wrecked everything!!!!!!!!!!!!!",
   "There are no more flies here.",
    "You bastard",
-   "Please let me greave in peace",
+   "Please let me grieve in peace",
    "I guess it really makes you think huh ?",
    "This is just like...",
    "this is just like in Undertale",
@@ -102,6 +106,9 @@ let endspeechIndex = 0;
          state: "idle" // State can be: idle, outbound, inbound, gun
      }
  };
+
+ 
+let gunCooldown = 0;
  
  // Our fly
  // Has a position, size, and speed of horizontal movement
@@ -174,10 +181,24 @@ let flavorbox = {
      background("#A2A4CA");
    
   showFlavortext();
+  
    
    //defining the intro state/
 if (state === 'intro'){
+
+  if (fly.x>320){
+    fly.speed=0
+     push();
+   stroke('black')
+   strokeWeight(2);
+   textSize(65);
+   fill(255, 255, 255)
+   textFont
+   text (remainingflies, 300, 100, 10);
+   pop();
+  }
   
+  showDialog();
   drawFrog();
   moveFrog();
   moveTongue();
@@ -188,9 +209,7 @@ if (state === 'intro'){
   moveGhostfly();
   glowGhostfly();
   checkTongueFlyOverlap();
-  showDialog();
   
-  showFlavortext();
 
 
 /**
@@ -248,18 +267,20 @@ if (state === 'intro'){
  else if (state === 'ending'){
    
   showFlavortext();
+  
+  showEndDialog();
    drawFrog();
    moveFrog();
    moveTongue();
    drawGhostfly();
    moveGhostfly();
    glowGhostfly();
-   showEndDialog();
    endingFly();
    
-  showFlavortext();
    
  }
+ 
+ gunCooldown = constrain(gunCooldown-1, 0, 100);
  } 
 
 function showFlavortext() {
@@ -331,17 +352,7 @@ function showEndDialog() {
     fly.y += random(1, -1);
     
     //restraining the fly to the middle of the screen/
-    if (fly.x>320){
-      fly.speed=0
-       push();
-     stroke('black')
-     strokeWeight(2);
-     textSize(65);
-     fill(255, 255, 255)
-     textFont
-     text (remainingflies, 300, 100, 10);
-     pop();
-    }
+
     if (speechIndex === 16){
       fly.speed = 3;}
     if (speechIndex === 19){
@@ -447,11 +458,11 @@ function endingFly(){
    //muzzle of the gun/
    rect (gun.x+35, gun.y-75, gun.width-10, 10)
    //barrel of the gun/
-   rect (gun.x+55, gun.y+20, -10, 10)
+   rect (gun.x+65, gun.y+20, -10, 10)
    //handle of the gun/
    rect (gun.x+25, gun.y-70, gun.width, gun.height);
    //sights of the gun/
-   rect (gun.x-20, gun.y+10, 50, 20)
+   rect (gun.x, gun.y+20, 50, 20)
    pop();
  }
  
@@ -650,21 +661,36 @@ function endingFly(){
        currentflavor = flavortext.gun;
       flavorbox.height += 100
        }
-       if (gun.y > 300 && keyIsPressed === true && keyCode === 32){
+       if (gun.y > 300 && keyIsPressed === true && keyCode === 32 && gunCooldown===0){
+        
         push();
         noStroke();
-        fill ('#FFA500');
+        fill('#FFFF00');
+        square(0, 0, 1000);
+        pop();
+        //gun blast/
+        push();
+        noStroke();
+        fill ('#FFFFFF');
         rect(gun.x+35, 0, 20, gun.y-75);
         pop();
+
+        gunCooldown = 50;
          
          //if gun ray intersects with fly it should be shot down.
          if (mouseX+35 < fly.x && fly.x < mouseX+55 ){
-           fly.y+= fly.speed*5;
+           fly.y+= fly.speed;
            
            ghostfly.x = fly.x;
            ghostfly.halo.x = fly.x;
            ghostfly.y = fly.y; 
            ghostfly.halo.y = fly.y;
+                   //red freezeframe when you hit something/
+           push();
+           noStroke();
+           fill('red');
+           square(0, 0, 1000);
+           pop();
            
             drawGhostfly();
            moveGhostfly();
